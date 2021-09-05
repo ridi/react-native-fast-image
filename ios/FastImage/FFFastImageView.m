@@ -115,7 +115,6 @@
     _needsReload = NO;
 
     if (_source) {
-
         // Load base64 images.
         NSString* url = [_source.url absoluteString];
         if (url && [url hasPrefix:@"data:image"]) {
@@ -142,7 +141,12 @@
             }
             return;
         }
-        
+
+        //  Fade in transition
+        if (_source.useFadeIn) {
+          self.sd_imageTransition = SDWebImageTransition.fadeTransition;
+        }
+
         // Set headers.
         NSDictionary *headers = _source.headers;
         SDWebImageDownloaderRequestModifier *requestModifier = [SDWebImageDownloaderRequestModifier requestModifierWithBlock:^NSURLRequest * _Nullable(NSURLRequest * _Nonnull request) {

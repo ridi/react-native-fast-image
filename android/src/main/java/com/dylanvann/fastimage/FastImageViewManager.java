@@ -7,8 +7,11 @@ import android.graphics.PorterDuff;
 import android.os.Build;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
@@ -26,6 +29,7 @@ import java.util.WeakHashMap;
 
 import javax.annotation.Nullable;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static com.dylanvann.fastimage.FastImageRequestListener.REACT_ON_ERROR_EVENT;
 import static com.dylanvann.fastimage.FastImageRequestListener.REACT_ON_LOAD_END_EVENT;
 import static com.dylanvann.fastimage.FastImageRequestListener.REACT_ON_LOAD_EVENT;
@@ -96,15 +100,17 @@ class FastImageViewManager extends SimpleViewManager<FastImageViewWithUrl> imple
         eventEmitter.receiveEvent(viewId, REACT_ON_LOAD_START_EVENT, new WritableNativeMap());
 
         if (requestManager != null) {
-            requestManager
-                    // This will make this work for remote and local images. e.g.
-                    //    - file:///
-                    //    - content://
-                    //    - res:/
-                    //    - android.resource://
-                    //    - data:image/png;base64
+
+            RequestBuilder requestBuilder = requestManager
                     .load(imageSource.getSourceForLoad())
-                    .apply(FastImageViewConverter.getOptions(context, imageSource, source))
+                    .apply(FastImageViewConverter.getOptions(context, imageSource, source));
+            if (source.hasKey("useFadeIn") && source.getBoolean("useFadeIn")) {
+                DrawableCrossFadeFactory factory =
+                        new DrawableCrossFadeFactory.Builder(150).setCrossFadeEnabled(true).build();
+                requestBuilder.transition(withCrossFade(factory));
+            }
+
+            requestBuilder
                     .listener(new FastImageRequestListener(key))
                     .into(view);
         }

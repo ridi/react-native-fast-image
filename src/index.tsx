@@ -117,6 +117,11 @@ export interface FastImageProps extends AccessibilityProps {
 
     tintColor?: number | string
 
+    /** 
+    useFadeIn transition in first load
+    */
+    useFadeIn?: boolean
+
     /**
      * A unique identifier for this element to be used in UI Automation testing scripts.
      */
@@ -142,12 +147,16 @@ function FastImageBase({
     // eslint-disable-next-line no-shadow
     resizeMode = 'cover',
     forwardedRef,
+    useFadeIn,
     ...props
 }: FastImageProps & { forwardedRef: React.Ref<any> }) {
     if (fallback) {
         const cleanedSource = { ...(source as any) }
         delete cleanedSource.cache
         const resolvedSource = Image.resolveAssetSource(cleanedSource)
+        if (useFadeIn) {
+            Object.assign(resolvedSource, { useFadeIn })
+        }
 
         return (
             <View style={[styles.imageContainer, style]} ref={forwardedRef}>
@@ -168,6 +177,9 @@ function FastImageBase({
     }
 
     const resolvedSource = Image.resolveAssetSource(source as any)
+    if (useFadeIn) {
+        Object.assign(resolvedSource, { useFadeIn })
+    }
 
     return (
         <View style={[styles.imageContainer, style]} ref={forwardedRef}>

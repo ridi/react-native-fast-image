@@ -27,6 +27,7 @@ RCT_ENUM_CONVERTER(FFFCacheControl, (@{
     FFFCacheControl cacheControl = [self FFFCacheControl:json[@"cache"]];
     
     NSDictionary *headers = [self NSDictionary:json[@"headers"]];
+    BOOL useFadeIn = [self BOOL:json[@"useFadeIn"]];
     if (headers) {
         __block BOOL allHeadersAreStrings = YES;
         [headers enumerateKeysAndObjectsUsingBlock:^(NSString *key, id header, BOOL *stop) {
@@ -43,7 +44,7 @@ RCT_ENUM_CONVERTER(FFFCacheControl, (@{
         }
     }
     
-    FFFastImageSource *imageSource = [[FFFastImageSource alloc] initWithURL:uri priority:priority headers:headers cacheControl:cacheControl];
+    FFFastImageSource *imageSource = [[FFFastImageSource alloc] initWithURL:uri priority:priority headers:headers cacheControl:cacheControl useFadeIn:useFadeIn];
     
     return imageSource;
 }

@@ -3,6 +3,9 @@
 #import <SDWebImage/SDAnimatedImageView+WebCache.h>
 #import <SDWebImage/SDWebImageDownloader.h>
 
+#import <SDWebImage/SDWebImageTransition.h>
+#import <SDWebImage/UIView+WebCache.h>
+
 #import <React/RCTComponent.h>
 #import <React/RCTResizeMode.h>
 
